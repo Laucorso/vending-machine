@@ -71,7 +71,9 @@
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ],
-        "demo": "@php artisan vending:demo"
+        "demo": "@php artisan vending:demo",
+        "lint": "pint",
+        "analyse": "phpstan analyse --memory-limit=512M"
     },
     "extra": {
         "laravel": {

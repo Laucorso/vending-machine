@@ -31,17 +31,28 @@ final class ServiceHttpRequest extends FormRequest
     /** @return array<string, int> */
     public function productCounts(): array
     {
-        return array_map('intval', $this->validated()['products'] ?? []);
+        /** @var array<string, mixed> $products */
+        $products = $this->validated()['products'] ?? [];
+
+        $result = [];
+        foreach ($products as $selector => $quantity) {
+            $result[(string) $selector] = is_numeric($quantity) ? (int) $quantity : 0;
+        }
+
+        return $result;
     }
 
     /** @return array<int, int> */
     public function coinCounts(): array
     {
-        $coins = [];
-        foreach ($this->validated()['coins'] ?? [] as $value => $quantity) {
-            $coins[(int) $value] = (int) $quantity;
+        /** @var array<int|string, mixed> $coins */
+        $coins = $this->validated()['coins'] ?? [];
+
+        $result = [];
+        foreach ($coins as $value => $quantity) {
+            $result[(int) $value] = is_numeric($quantity) ? (int) $quantity : 0;
         }
 
-        return $coins;
+        return $result;
     }
 }

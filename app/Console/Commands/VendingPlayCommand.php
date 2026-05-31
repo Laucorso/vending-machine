@@ -17,11 +17,6 @@ use VendingMachine\Domain\VendingMachineException;
 
 /**
  * `php artisan vending:play` — an interactive console front-end for the machine.
- *
- * It is intentionally a *thin* adapter: every operation goes through the same
- * Application Actions the HTTP controller uses. The console and the API are two
- * skins over one set of use cases, which is the whole point of keeping business
- * logic out of the delivery layer.
  */
 final class VendingPlayCommand extends Command
 {
@@ -59,20 +54,20 @@ final class VendingPlayCommand extends Command
                 $this->money($machine->availableChange()->toDecimal()),
             ));
 
-            $action = $this->choice('What would you like to do?', [
+            $action = $this->pick('What would you like to do?', [
                 'Insert a coin',
                 'Buy a product',
                 'Return my coins',
                 'Refill the machine (service)',
                 'Quit',
-            ], 0);
+            ]);
 
             $shouldContinue = match ($action) {
                 'Insert a coin' => $this->doInsert($insert),
                 'Buy a product' => $this->doBuy($select),
                 'Return my coins' => $this->doReturn($returnCoins),
                 'Refill the machine (service)' => $this->doService($service),
-                'Quit' => false,
+                default => false,
             };
 
             $this->newLine();
@@ -87,7 +82,7 @@ final class VendingPlayCommand extends Command
 
     private function doInsert(InsertCoinAction $insert): bool
     {
-        $coin = $this->choice('Which coin?', self::COINS, 2);
+        $coin = $this->pick('Which coin?', self::COINS, '0.25');
         $result = $insert->execute(InsertCoinRequest::fromValue($coin));
 
         $this->info(sprintf('Inserted %s. Balance is now %s.', $this->money((float) $coin), $this->money($result->insertedTotal)));
@@ -97,7 +92,7 @@ final class VendingPlayCommand extends Command
 
     private function doBuy(SelectProductAction $select): bool
     {
-        $label = $this->choice('Which product?', array_keys(self::PRODUCTS));
+        $label = $this->pick('Which product?', array_keys(self::PRODUCTS));
         $code = self::PRODUCTS[$label];
 
         try {
@@ -138,11 +133,31 @@ final class VendingPlayCommand extends Command
         ));
     }
 
+    /**
+     * A single-choice prompt that always yields a string, keeping the rest of
+     * the command free of the array|string return type Laravel's choice() has.
+     *
+     * @param  list<string>  $options
+     */
+    private function pick(string $question, array $options, ?string $default = null): string
+    {
+        $answer = $this->choice($question, $options, $default ?? $options[0]);
+
+        if (is_array($answer)) {
+            $first = reset($answer);
+
+            return is_string($first) ? $first : '';
+        }
+
+        return $answer;
+    }
+
     private function money(float $amount): string
     {
         return number_format($amount, 2);
     }
 
+    /** @param list<float> $coins */
     private function coins(array $coins): string
     {
         if ($coins === []) {

@@ -50,15 +50,23 @@ final class CacheVendingMachineRepository implements VendingMachineRepository
         $this->cache->forever(self::STATE_KEY, serialize($machine));
     }
 
+    /**
+     * @template T
+     *
+     * @param  callable(VendingMachine): T  $operation
+     * @return T
+     */
     public function mutate(callable $operation): mixed
     {
-        return $this->cache->lock(self::LOCK_KEY, self::LOCK_TTL_SECONDS)
-            ->block(self::LOCK_WAIT_SECONDS, function () use ($operation) {
-                $machine = $this->get();
-                $result = $operation($machine);
-                $this->save($machine);
+        /** @var \Illuminate\Contracts\Cache\Lock $lock */
+        $lock = $this->cache->lock(self::LOCK_KEY, self::LOCK_TTL_SECONDS);
 
-                return $result;
-            });
+        return $lock->block(self::LOCK_WAIT_SECONDS, function () use ($operation) {
+            $machine = $this->get();
+            $result = $operation($machine);
+            $this->save($machine);
+
+            return $result;
+        });
     }
 }

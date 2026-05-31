@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\VendingMachine\Persistence\CacheVendingMachineRepository;
 use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use VendingMachine\Domain\Money\ChangeCalculator;
 use VendingMachine\Domain\Vending\VendingMachineRepository;
@@ -23,6 +24,11 @@ final class VendingMachineServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ChangeCalculator::class);
-        $this->app->bind(VendingMachineRepository::class, fn ($app) => new CacheVendingMachineRepository($app->make(Cache::class)));
+        $this->app->bind(
+            VendingMachineRepository::class,
+            static fn (Application $app): CacheVendingMachineRepository => new CacheVendingMachineRepository(
+                $app->make(Cache::class),
+            ),
+        );
     }
 }

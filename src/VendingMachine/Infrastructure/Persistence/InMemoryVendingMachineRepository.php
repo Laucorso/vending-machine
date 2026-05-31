@@ -33,6 +33,12 @@ final class InMemoryVendingMachineRepository implements VendingMachineRepository
         $this->machine = $machine;
     }
 
+    /**
+     * @template T
+     *
+     * @param  callable(VendingMachine): T  $operation
+     * @return T
+     */
     public function mutate(callable $operation): mixed
     {
         $result = $operation($this->machine);

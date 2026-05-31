@@ -18,5 +18,11 @@ interface VendingMachineRepository
 
     public function save(VendingMachine $machine): void;
 
+    /**
+     * @template T
+     *
+     * @param  callable(VendingMachine): T  $operation
+     * @return T
+     */
     public function mutate(callable $operation): mixed;
 }

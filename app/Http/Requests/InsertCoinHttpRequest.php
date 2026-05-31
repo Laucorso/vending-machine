@@ -29,6 +29,9 @@ final class InsertCoinHttpRequest extends FormRequest
 
     public function coin(): int|float|string
     {
-        return $this->validated()['coin'];
+        /** @var int|float|string $coin */
+        $coin = $this->validated('coin');
+
+        return $coin;
     }
 }

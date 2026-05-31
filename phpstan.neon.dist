@@ -1,0 +1,20 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: max
+
+    paths:
+        - src
+        - app
+
+    parallel:
+        maximumNumberOfProcesses: 4
+        
+    ignoreErrors:
+        # The cache Repository proxies lock() to its store via __call, which
+        # static analysis can't see. The method exists at runtime on the
+        # file/array/redis stores this project uses.
+        -
+            message: '#Call to an undefined method .*Cache\\Repository::lock\(\)#'
+            path: app/VendingMachine/Persistence/CacheVendingMachineRepository.php
