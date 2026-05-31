@@ -1,58 +1,148 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Vending Machine (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A vending machine modelled with Domain-Driven Design inside a single bounded
+context, served through a Laravel application.
 
-## About Laravel
+The machine accepts coins of `0.05`, `0.10`, `0.25` and `1.00`, sells Water
+(`0.65`), Juice (`1.00`) and Soda (`1.50`), returns the inserted coins on
+demand, and gives change when you overpay.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The important architectural point: **the domain knows nothing about Laravel.**
+It lives in `src/VendingMachine` and depends only on PHP. Laravel is wired in
+through a thin adapter layer (a service provider, a controller, form requests,
+a console command and a cache-backed repository). Swap the framework and the
+domain code does not change.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requirements
 
-## Learning Laravel
+- PHP 8.3+
+- Composer
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Tests use the in-memory SQLite / array cache configured in `phpunit.xml`, so no
+external services are needed.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Setup
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Running it
 
-## Contributing
+```bash
+php artisan vending:demo   # the three spec examples, through the container
+php artisan test           # domain unit tests + HTTP feature tests
+php bin/demo.php            # framework-free demo, straight on the domain
+php artisan serve          # serve the API
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+`php artisan vending:demo` prints:
 
-## Code of Conduct
+```
+Example 1  -> Soda, change: (no change)
+Example 2  -> returned: 0.1, 0.1
+Example 3  -> Water, change: 0.25, 0.1
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## HTTP API
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Method & path                   | Action                | Body                                             |
+|---------------------------------|-----------------------|--------------------------------------------------|
+| `POST /api/coins`               | insert a coin         | `{ "coin": 0.25 }`                               |
+| `POST /api/coins/return`        | return inserted coins | -                                                |
+| `POST /api/products/{selector}` | buy a product         | - (`selector` = WATER / JUICE / SODA)            |
+| `POST /api/service`             | restock + change      | `{ "products": {"SODA":5}, "coins": {"25":10} }` |
 
-## License
+Business failures (unknown product, sold out, not enough money, no change
+possible, invalid coin) return HTTP `422` with `{ "error": "..." }`. The mapping
+is registered once in `bootstrap/app.php`, so controllers stay free of error
+handling.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Example session:
+
+```bash
+curl -X POST localhost:8000/api/service -H 'Content-Type: application/json' \
+  -d '{"products":{"WATER":5,"JUICE":5,"SODA":5},"coins":{"100":10,"25":10,"10":10,"5":10}}'
+
+curl -X POST localhost:8000/api/coins -H 'Content-Type: application/json' -d '{"coin":1}'
+curl -X POST localhost:8000/api/products/WATER
+# -> {"product":"Water","change":[0.25,0.1]}
+```
+
+---
+
+## Where things live
+
+```
+src/VendingMachine/                 # the bounded context - pure PHP, no framework
+|-- Domain/
+|   |-- Money/        Coin, Money (integer cents), CoinCollection, CoinBank,
+|   |                 ChangeCalculator (+ Exception/)
+|   |-- Catalog/      ProductSelector, Product, Catalog, ProductInventory (+ Exception/)
+|   |-- Vending/      VendingMachine (aggregate root), VendOutcome,
+|   |                 VendingMachineRepository (port) (+ Exception/)
+|   `-- VendingMachineException.php          # marker for every business failure
+|-- Application/
+|   |-- Action/       InsertCoin / ReturnCoins / SelectProduct / ServiceMachine
+|   |-- Request/      input DTOs (raw input -> validated domain types)
+|   `-- Dto/          output DTOs (domain -> primitives)
+`-- Infrastructure/
+    `-- Persistence/  InMemoryVendingMachineRepository   # for CLI / tests
+
+app/                                 # the Laravel adapter layer
+|-- Providers/VendingMachineServiceProvider.php   # binds the port + change strategy
+|-- Http/Controllers/VendingMachineController.php # HTTP -> Action -> JSON
+|-- Http/Requests/                                # HTTP-shape validation
+|-- Console/Commands/VendingDemoCommand.php       # php artisan vending:demo
+`-- VendingMachine/Persistence/CacheVendingMachineRepository.php  # the only Laravel-aware adapter
+```
+
+---
+
+## Design decisions
+
+- **Money is always integer cents.** Floats appear only at the presentation
+  boundary; arithmetic never touches them. Removes a whole class of rounding
+  bugs.
+
+- **The aggregate enforces every invariant** (enough money, in stock, change is
+  possible) and is the only thing that can change machine state. Actions only
+  orchestrate; the controller only translates HTTP.
+
+- **Operations are atomic.** `vend()` projects the change against a *copy* of the
+  coin bank before mutating anything; if change can't be made, nothing changes
+  and the balance survives. Guard order is stock -> funds -> change.
+
+- **Persistence is a port with two adapters.** The in-memory one (in `src/`)
+  suits a single long-lived process; the Laravel cache one (in `app/`) keeps the
+  aggregate alive between stateless HTTP requests. Switching cost the domain
+  exactly zero changes - that is the point of the `VendingMachineRepository`
+  interface.
+
+- **Change is an isolated strategy** (`ChangeCalculator`, greedy and
+  availability-aware). Greedy is optimal here with unlimited coins; with limited
+  stock it can miss a solution a dynamic-programming version would find.
+  Replacing it is a one-class change.
+
+- **The framework is a detail.** The domain has no `use Illuminate\...`. Only the
+  files in `app/` that *must* know Laravel do.
+
+---
+
+## Tests
+
+- **`tests/Unit`** - value objects, coin bank, change calculator, product
+  inventory and the `VendingMachine` aggregate (the spec examples and every
+  invariant). Pure PHPUnit, no framework boot.
+- **`tests/Feature/VendingScenarioTest.php`** - the use cases through the Actions
+  and the in-memory repository, framework-free.
+- **`tests/Feature/VendingApiTest.php`** - the full HTTP stack: routes, container
+  bindings, the cache repository and the exception handler.
