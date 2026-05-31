@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace VendingMachine\Domain\Vending;
 
 use VendingMachine\Domain\Catalog\Catalog;
@@ -115,6 +113,12 @@ final class VendingMachine
         return $this->insertedCoins->total();
     }
 
+    /** The total amount the machine can currently give as change. */
+    public function availableChange(): \VendingMachine\Domain\Money\Money
+    {
+        return $this->coinBank->total();
+    }
+
     private function guardInStock(ProductSelector $selector): void
     {
         if (! $this->inventory->isInStock($selector)) {
@@ -131,4 +135,5 @@ final class VendingMachine
             );
         }
     }
+
 }

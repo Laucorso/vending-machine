@@ -82,6 +82,17 @@ final class CoinBank
         return $this->quantities[$coin->value];
     }
 
+    /** The total amount of money the bank currently holds. */
+    public function total(): Money
+    {
+        $cents = 0;
+        foreach ($this->quantities as $coinValue => $quantity) {
+            $cents += $coinValue * $quantity;
+        }
+
+        return Money::fromCents($cents);
+    }
+
     /** A deep copy, safe to use for "what-if" change projections. */
     public function copy(): self
     {
