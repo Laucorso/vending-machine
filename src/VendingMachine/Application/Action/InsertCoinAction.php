@@ -6,6 +6,7 @@ namespace VendingMachine\Application\Action;
 
 use VendingMachine\Application\Dto\InsertResult;
 use VendingMachine\Application\Request\InsertCoinRequest;
+use VendingMachine\Domain\Vending\VendingMachine;
 use VendingMachine\Domain\Vending\VendingMachineRepository;
 
 /** Use case: a customer inserts one coin. */
@@ -17,10 +18,14 @@ final readonly class InsertCoinAction
 
     public function execute(InsertCoinRequest $request): InsertResult
     {
-        $machine = $this->machines->get();
-        $machine->insertCoin($request->coin);
-        $this->machines->save($machine);
+        $insertedTotal = $this->machines->mutate(
+            function (VendingMachine $machine) use ($request) {
+                $machine->insertCoin($request->coin);
 
-        return InsertResult::from($machine->insertedAmount());
+                return $machine->insertedAmount();
+            },
+        );
+
+        return InsertResult::from($insertedTotal);
     }
 }
