@@ -12,9 +12,7 @@ use VendingMachine\Domain\Vending\VendingMachineRepository;
 /** Use case: a customer inserts one coin. */
 final readonly class InsertCoinAction
 {
-    public function __construct(private VendingMachineRepository $machines)
-    {
-    }
+    public function __construct(private VendingMachineRepository $machines) {}
 
     public function execute(InsertCoinRequest $request): InsertResult
     {

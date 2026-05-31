@@ -20,7 +20,7 @@ final class VendingApiTest extends TestCase
 
         $this->postJson('/api/service', [
             'products' => ['WATER' => 5, 'JUICE' => 5, 'SODA' => 5],
-            'coins'    => [100 => 10, 25 => 10, 10 => 10, 5 => 10],
+            'coins' => [100 => 10, 25 => 10, 10 => 10, 5 => 10],
         ])->assertOk();
     }
 

@@ -9,9 +9,7 @@ use VendingMachine\Domain\Catalog\ProductSelector;
 /** Input boundary for "press a product button". */
 final readonly class SelectProductRequest
 {
-    private function __construct(public ProductSelector $selector)
-    {
-    }
+    private function __construct(public ProductSelector $selector) {}
 
     public static function fromCode(string $selector): self
     {

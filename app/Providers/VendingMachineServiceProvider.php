@@ -23,7 +23,6 @@ final class VendingMachineServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ChangeCalculator::class);
-        $this->app->bind(VendingMachineRepository::class, fn ($app) =>
-            new CacheVendingMachineRepository($app->make(Cache::class)));
+        $this->app->bind(VendingMachineRepository::class, fn ($app) => new CacheVendingMachineRepository($app->make(Cache::class)));
     }
 }

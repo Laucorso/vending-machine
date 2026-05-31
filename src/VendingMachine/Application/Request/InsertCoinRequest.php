@@ -13,9 +13,7 @@ use VendingMachine\Domain\Money\Coin;
  */
 final readonly class InsertCoinRequest
 {
-    private function __construct(public Coin $coin)
-    {
-    }
+    private function __construct(public Coin $coin) {}
 
     public static function fromValue(int|float|string $value): self
     {

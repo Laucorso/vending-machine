@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VendingMachine\Domain\Vending;
 
 use VendingMachine\Domain\Catalog\Catalog;
+use VendingMachine\Domain\Catalog\Exception\ProductNotFoundException;
 use VendingMachine\Domain\Catalog\Exception\ProductOutOfStockException;
 use VendingMachine\Domain\Catalog\Product;
 use VendingMachine\Domain\Catalog\ProductInventory;
@@ -11,6 +14,8 @@ use VendingMachine\Domain\Money\ChangeCalculator;
 use VendingMachine\Domain\Money\Coin;
 use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Money\CoinCollection;
+use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
+use VendingMachine\Domain\Money\Money;
 use VendingMachine\Domain\Vending\Exception\InsufficientFundsException;
 
 /**
@@ -68,10 +73,10 @@ final class VendingMachine
      * machine state is left untouched and the customer keeps their balance,
      * exactly like a real machine.
      *
-     * @throws \VendingMachine\Domain\Catalog\Exception\ProductNotFoundException
-     * @throws \VendingMachine\Domain\Catalog\Exception\ProductOutOfStockException
+     * @throws ProductNotFoundException
+     * @throws ProductOutOfStockException
      * @throws InsufficientFundsException
-     * @throws \VendingMachine\Domain\Money\Exception\InsufficientChangeException
+     * @throws InsufficientChangeException
      */
     public function vend(ProductSelector $selector, ChangeCalculator $changeCalculator): VendOutcome
     {
@@ -108,13 +113,13 @@ final class VendingMachine
 
     // -- State inspection ----------------------------------------------------
 
-    public function insertedAmount(): \VendingMachine\Domain\Money\Money
+    public function insertedAmount(): Money
     {
         return $this->insertedCoins->total();
     }
 
     /** The total amount the machine can currently give as change. */
-    public function availableChange(): \VendingMachine\Domain\Money\Money
+    public function availableChange(): Money
     {
         return $this->coinBank->total();
     }
@@ -135,5 +140,4 @@ final class VendingMachine
             );
         }
     }
-
 }

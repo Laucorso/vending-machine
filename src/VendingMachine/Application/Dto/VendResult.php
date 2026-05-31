@@ -13,8 +13,7 @@ final readonly class VendResult
     public function __construct(
         public string $product,
         public array $change,
-    ) {
-    }
+    ) {}
 
     public static function from(VendOutcome $outcome): self
     {

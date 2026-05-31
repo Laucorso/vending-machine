@@ -11,9 +11,7 @@ use VendingMachine\Domain\Vending\VendingMachineRepository;
 /** Use case: a customer presses RETURN-COIN. */
 final readonly class ReturnCoinsAction
 {
-    public function __construct(private VendingMachineRepository $machines)
-    {
-    }
+    public function __construct(private VendingMachineRepository $machines) {}
 
     public function execute(): CoinReturn
     {

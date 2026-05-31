@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\TestCase;
 use VendingMachine\Application\Action\InsertCoinAction;
 use VendingMachine\Application\Action\ReturnCoinsAction;
 use VendingMachine\Application\Action\SelectProductAction;
@@ -13,7 +14,6 @@ use VendingMachine\Application\Request\SelectProductRequest;
 use VendingMachine\Application\Request\ServiceRequest;
 use VendingMachine\Domain\Money\ChangeCalculator;
 use VendingMachine\Infrastructure\Persistence\InMemoryVendingMachineRepository;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Exercises the full stack the way an external driver (HTTP, CLI, hardware)
@@ -22,17 +22,21 @@ use PHPUnit\Framework\TestCase;
 final class VendingScenarioTest extends TestCase
 {
     private InMemoryVendingMachineRepository $machines;
+
     private InsertCoinAction $insert;
+
     private ReturnCoinsAction $return;
+
     private SelectProductAction $select;
+
     private ServiceMachineAction $service;
 
     protected function setUp(): void
     {
-        $this->machines = new InMemoryVendingMachineRepository();
+        $this->machines = new InMemoryVendingMachineRepository;
         $this->insert = new InsertCoinAction($this->machines);
         $this->return = new ReturnCoinsAction($this->machines);
-        $this->select = new SelectProductAction($this->machines, new ChangeCalculator());
+        $this->select = new SelectProductAction($this->machines, new ChangeCalculator);
         $this->service = new ServiceMachineAction($this->machines);
     }
 
@@ -82,8 +86,8 @@ final class VendingScenarioTest extends TestCase
     }
 
     /**
-     * @param array<string, int> $products
-     * @param array<int, int>    $coins
+     * @param  array<string, int>  $products
+     * @param  array<int, int>  $coins
      */
     private function stockMachine(array $products, array $coins): void
     {

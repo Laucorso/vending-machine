@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Catalog;
 
+use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Catalog\Exception\ProductNotFoundException;
 use VendingMachine\Domain\Catalog\ProductSelector;
-use PHPUnit\Framework\TestCase;
 
 final class ProductSelectorTest extends TestCase
 {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Catalog;
 
+use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Catalog\Catalog;
 use VendingMachine\Domain\Catalog\Exception\ProductOutOfStockException;
 use VendingMachine\Domain\Catalog\ProductInventory;
 use VendingMachine\Domain\Catalog\ProductSelector;
-use PHPUnit\Framework\TestCase;
 
 final class ProductInventoryTest extends TestCase
 {

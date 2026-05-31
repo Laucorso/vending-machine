@@ -26,8 +26,7 @@ final class Catalog
     }
 
     /**
-     * @param list<Product> $products
-     *
+     * @param  list<Product>  $products
      * @return array<string, Product>
      */
     private static function index(array $products): array

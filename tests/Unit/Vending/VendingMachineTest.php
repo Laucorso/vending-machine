@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Vending;
 
+use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Catalog\Catalog;
 use VendingMachine\Domain\Catalog\Exception\ProductOutOfStockException;
 use VendingMachine\Domain\Catalog\ProductInventory;
@@ -14,7 +15,6 @@ use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
 use VendingMachine\Domain\Vending\Exception\InsufficientFundsException;
 use VendingMachine\Domain\Vending\VendingMachine;
-use PHPUnit\Framework\TestCase;
 
 final class VendingMachineTest extends TestCase
 {
@@ -22,7 +22,7 @@ final class VendingMachineTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->changeCalculator = new ChangeCalculator();
+        $this->changeCalculator = new ChangeCalculator;
     }
 
     /** Spec example 1: 1, 0.25, 0.25, GET-SODA -> SODA (exact change). */
@@ -131,8 +131,8 @@ final class VendingMachineTest extends TestCase
     }
 
     /**
-     * @param array<string, int> $products
-     * @param array<int, int>    $coins
+     * @param  array<string, int>  $products
+     * @param  array<int, int>  $coins
      */
     private function machineWith(array $products, array $coins): VendingMachine
     {

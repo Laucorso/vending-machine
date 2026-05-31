@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -24,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(
             fn (VendingMachineException $e) => response()->json([
                 'error' => $e->getMessage(),
-                'code'  => $e->errorCode()->value,
+                'code' => $e->errorCode()->value,
             ], 422),
         );
     })->create();

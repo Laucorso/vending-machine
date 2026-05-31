@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Money;
 
+use Tests\TestCase;
 use VendingMachine\Domain\Money\ChangeCalculator;
 use VendingMachine\Domain\Money\Coin;
 use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
 use VendingMachine\Domain\Money\Money;
-use Tests\TestCase;
 
 final class ChangeCalculatorTest extends TestCase
 {
@@ -17,7 +17,7 @@ final class ChangeCalculatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->calculator = new ChangeCalculator();
+        $this->calculator = new ChangeCalculator;
     }
 
     public function test_zero_change_returns_no_coins(): void
@@ -98,7 +98,7 @@ final class ChangeCalculatorTest extends TestCase
      * Exhaustive feasibility check used only by the test above: can the given
      * coin stock form exactly $amount cents?
      *
-     * @param array<int, int> $available coin value (cents) => quantity
+     * @param  array<int, int>  $available  coin value (cents) => quantity
      */
     private function aSolutionExistsFor(int $amount, array $available): bool
     {

@@ -22,8 +22,8 @@ final class ProductInventory
     private array $quantities;
 
     /**
-     * @param array<string, Product> $catalog        selector value => product
-     * @param array<string, int>     $quantities     selector value => quantity
+     * @param  array<string, Product>  $catalog  selector value => product
+     * @param  array<string, int>  $quantities  selector value => quantity
      */
     public function __construct(array $catalog, array $quantities = [])
     {

@@ -12,8 +12,7 @@ final readonly class Product
     public function __construct(
         public ProductSelector $selector,
         public Money $price,
-    ) {
-    }
+    ) {}
 
     public function name(): string
     {

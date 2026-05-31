@@ -11,8 +11,8 @@ use VendingMachine\Domain\Catalog\ProductSelector;
 use VendingMachine\Domain\Money\ChangeCalculator;
 use VendingMachine\Domain\Money\Coin;
 use VendingMachine\Domain\Money\CoinBank;
-use VendingMachine\Domain\VendingMachineException;
 use VendingMachine\Domain\Vending\VendingMachine;
+use VendingMachine\Domain\VendingMachineException;
 
 /**
  * Property-based tests of the machine's money invariants.
@@ -36,13 +36,14 @@ use VendingMachine\Domain\Vending\VendingMachine;
 final class MoneyConservationTest extends TestCase
 {
     private const ITERATIONS = 1000;
+
     private const SEED = 20260526;
 
     private ChangeCalculator $change;
 
     protected function setUp(): void
     {
-        $this->change = new ChangeCalculator();
+        $this->change = new ChangeCalculator;
     }
 
     public function test_money_is_conserved_on_sale_and_balance_is_preserved_on_refusal(): void
@@ -114,9 +115,9 @@ final class MoneyConservationTest extends TestCase
                 ProductSelector::Soda->value => mt_rand(0, 3),
             ]),
             CoinBank::fromCounts([
-                5   => mt_rand(0, 10),
-                10  => mt_rand(0, 10),
-                25  => mt_rand(0, 10),
+                5 => mt_rand(0, 10),
+                10 => mt_rand(0, 10),
+                25 => mt_rand(0, 10),
                 100 => mt_rand(0, 5),
             ]),
         );
@@ -125,8 +126,7 @@ final class MoneyConservationTest extends TestCase
     }
 
     /**
-     * @param list<Coin> $coins
-     *
+     * @param  list<Coin>  $coins
      * @return list<Coin>
      */
     private function randomCoins(array $coins): array

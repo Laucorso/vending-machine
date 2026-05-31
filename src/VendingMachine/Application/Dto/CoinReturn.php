@@ -10,9 +10,7 @@ use VendingMachine\Domain\Money\CoinCollection;
 final readonly class CoinReturn
 {
     /** @param list<float> $coins */
-    public function __construct(public array $coins)
-    {
-    }
+    public function __construct(public array $coins) {}
 
     public static function from(CoinCollection $coins): self
     {

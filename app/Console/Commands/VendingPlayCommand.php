@@ -68,11 +68,11 @@ final class VendingPlayCommand extends Command
             ], 0);
 
             $shouldContinue = match ($action) {
-                'Insert a coin'                => $this->doInsert($insert),
-                'Buy a product'                => $this->doBuy($select),
-                'Return my coins'              => $this->doReturn($returnCoins),
+                'Insert a coin' => $this->doInsert($insert),
+                'Buy a product' => $this->doBuy($select),
+                'Return my coins' => $this->doReturn($returnCoins),
                 'Refill the machine (service)' => $this->doService($service),
-                'Quit'                         => false,
+                'Quit' => false,
             };
 
             $this->newLine();
@@ -117,7 +117,7 @@ final class VendingPlayCommand extends Command
     {
         $result = $returnCoins->execute();
 
-        $this->info('Coins returned: ' . $this->coins($result->coins));
+        $this->info('Coins returned: '.$this->coins($result->coins));
 
         return true;
     }

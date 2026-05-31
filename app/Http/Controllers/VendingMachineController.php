@@ -46,7 +46,7 @@ final class VendingMachineController extends Controller
 
         return response()->json([
             'product' => $result->product,
-            'change'  => $result->change,
+            'change' => $result->change,
         ]);
     }
 

@@ -20,8 +20,8 @@ use VendingMachine\Domain\Vending\VendingMachineRepository;
  */
 final class CacheVendingMachineRepository implements VendingMachineRepository
 {
-
     private const STATE_KEY = 'vending_machine.state';
+
     private const LOCK_KEY = 'vending_machine.lock';
 
     /** Max time the lock is held before auto-releasing (guards against a dead holder). */
@@ -30,9 +30,7 @@ final class CacheVendingMachineRepository implements VendingMachineRepository
     /** Max time a caller waits to acquire the lock before giving up. */
     private const LOCK_WAIT_SECONDS = 5;
 
-    public function __construct(private readonly Cache $cache)
-    {
-    }
+    public function __construct(private readonly Cache $cache) {}
 
     public function get(): VendingMachine
     {
@@ -42,7 +40,9 @@ final class CacheVendingMachineRepository implements VendingMachineRepository
             return VendingMachine::empty();
         }
 
-        return unserialize($serialized, ['allowed_classes' => true]);
+        $machine = unserialize($serialized, ['allowed_classes' => true]);
+
+        return $machine instanceof VendingMachine ? $machine : VendingMachine::empty();
     }
 
     public function save(VendingMachine $machine): void

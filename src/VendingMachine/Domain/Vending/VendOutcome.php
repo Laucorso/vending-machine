@@ -13,6 +13,5 @@ final readonly class VendOutcome
     public function __construct(
         public Product $product,
         public CoinCollection $change,
-    ) {
-    }
+    ) {}
 }

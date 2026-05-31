@@ -13,12 +13,12 @@ use VendingMachine\Domain\Money\ChangeCalculator;
 use VendingMachine\Domain\VendingMachineException;
 use VendingMachine\Infrastructure\Persistence\InMemoryVendingMachineRepository;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
-$machines = new InMemoryVendingMachineRepository();
+$machines = new InMemoryVendingMachineRepository;
 $insert = new InsertCoinAction($machines);
 $returnCoins = new ReturnCoinsAction($machines);
-$select = new SelectProductAction($machines, new ChangeCalculator());
+$select = new SelectProductAction($machines, new ChangeCalculator);
 $service = new ServiceMachineAction($machines);
 
 $fmt = static fn (array $coins): string => $coins === [] ? '(no change)' : implode(', ', $coins);

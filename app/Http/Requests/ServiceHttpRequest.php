@@ -21,10 +21,10 @@ final class ServiceHttpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'products'   => ['array'],
+            'products' => ['array'],
             'products.*' => ['integer', 'min:0'],
-            'coins'      => ['array'],
-            'coins.*'    => ['integer', 'min:0'],
+            'coins' => ['array'],
+            'coins.*' => ['integer', 'min:0'],
         ];
     }
 

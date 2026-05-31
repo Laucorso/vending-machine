@@ -16,8 +16,7 @@ final readonly class SelectProductAction
     public function __construct(
         private VendingMachineRepository $machines,
         private ChangeCalculator $changeCalculator,
-    ) {
-    }
+    ) {}
 
     public function execute(SelectProductRequest $request): VendResult
     {

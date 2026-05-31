@@ -22,7 +22,7 @@ final readonly class CoinCollection
 
     public static function empty(): self
     {
-        return new self();
+        return new self;
     }
 
     public function add(Coin $coin): self

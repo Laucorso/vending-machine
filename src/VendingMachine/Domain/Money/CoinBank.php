@@ -16,7 +16,7 @@ final class CoinBank
     private array $quantities;
 
     /**
-     * @param array<int, int> $quantities coin value (cents) => quantity
+     * @param  array<int, int>  $quantities  coin value (cents) => quantity
      */
     private function __construct(array $quantities)
     {
@@ -34,7 +34,7 @@ final class CoinBank
     }
 
     /**
-     * @param array<int, int> $countsByCoinValue coin value (cents) => quantity
+     * @param  array<int, int>  $countsByCoinValue  coin value (cents) => quantity
      */
     public static function fromCounts(array $countsByCoinValue): self
     {

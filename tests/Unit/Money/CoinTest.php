@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Money;
 
+use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Money\Coin;
 use VendingMachine\Domain\Money\Exception\InvalidCoinException;
-use PHPUnit\Framework\TestCase;
 
 final class CoinTest extends TestCase
 {

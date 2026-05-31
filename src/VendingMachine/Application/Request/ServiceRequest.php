@@ -18,18 +18,17 @@ use VendingMachine\Domain\Money\CoinBank;
 final readonly class ServiceRequest
 {
     /**
-     * @param array<string, int> $productCounts selector value => quantity
-     * @param array<int, int>    $coinCounts    coin value (cents) => quantity
+     * @param  array<string, int>  $productCounts  selector value => quantity
+     * @param  array<int, int>  $coinCounts  coin value (cents) => quantity
      */
     private function __construct(
         public array $productCounts,
         public array $coinCounts,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array<string, int> $productCounts selector value => quantity
-     * @param array<int, int>    $coinCounts    coin value (cents) => quantity
+     * @param  array<string, int>  $productCounts  selector value => quantity
+     * @param  array<int, int>  $coinCounts  coin value (cents) => quantity
      */
     public static function fromCounts(array $productCounts, array $coinCounts): self
     {
