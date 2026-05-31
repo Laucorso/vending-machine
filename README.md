@@ -52,6 +52,25 @@ Example 3  -> Water, change: 0.25, 0.1
 
 ---
 
+## With Docker (recommended for evaluation)
+
+No local PHP needed, and no external services are spun up.
+
+```bash
+docker compose build
+docker compose run --rm app php artisan vending:demo   # spec examples
+docker compose run --rm app php artisan test           # full test suite
+docker compose up                                      # API on http://localhost:8000
+```
+
+The image installs only the extensions this app uses (`mbstring`, `pdo_sqlite`).
+Tests run on SQLite `:memory:` and the array cache, so there is deliberately no
+MySQL/Redis container - the app needs none. (Laravel Sail would work too, but it
+provisions services this domain doesn't use; a purpose-built image keeps
+evaluation a single command.)
+
+---
+
 ## HTTP API
 
 | Method & path                   | Action                | Body                                             |

@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    # `docker compose up`                              -> API on http://localhost:8000
+    # `docker compose run --rm app php artisan test`   -> full test suite
+    # `docker compose run --rm app php artisan vending:demo` -> spec examples
