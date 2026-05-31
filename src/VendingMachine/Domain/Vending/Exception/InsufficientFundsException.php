@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace VendingMachine\Domain\Vending\Exception;
 
 use VendingMachine\Domain\Catalog\Product;
+use VendingMachine\Domain\ErrorCode;
 use VendingMachine\Domain\Money\Money;
 use VendingMachine\Domain\VendingMachineException;
 
@@ -18,5 +19,10 @@ final class InsufficientFundsException extends \DomainException implements Vendi
             $product->price->toDecimal(),
             $inserted->toDecimal(),
         ));
+    }
+
+    public function errorCode(): ErrorCode
+    {
+        return ErrorCode::InsufficientFunds;
     }
 }

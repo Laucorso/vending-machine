@@ -21,8 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*'),
         );
 
-        // Every expected business failure becomes a 422; real bugs still 500.
         $exceptions->render(
-            fn (VendingMachineException $e) => response()->json(['error' => $e->getMessage()], 422),
+            fn (VendingMachineException $e) => response()->json([
+                'error' => $e->getMessage(),
+                'code'  => $e->errorCode()->value,
+            ], 422),
         );
     })->create();
