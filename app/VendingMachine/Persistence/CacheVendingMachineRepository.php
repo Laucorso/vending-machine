@@ -20,7 +20,15 @@ use VendingMachine\Domain\Vending\VendingMachineRepository;
  */
 final class CacheVendingMachineRepository implements VendingMachineRepository
 {
+
     private const STATE_KEY = 'vending_machine.state';
+    private const LOCK_KEY = 'vending_machine.lock';
+
+    /** Max time the lock is held before auto-releasing (guards against a dead holder). */
+    private const LOCK_TTL_SECONDS = 10;
+
+    /** Max time a caller waits to acquire the lock before giving up. */
+    private const LOCK_WAIT_SECONDS = 5;
 
     public function __construct(private readonly Cache $cache)
     {
@@ -40,5 +48,17 @@ final class CacheVendingMachineRepository implements VendingMachineRepository
     public function save(VendingMachine $machine): void
     {
         $this->cache->forever(self::STATE_KEY, serialize($machine));
+    }
+
+    public function mutate(callable $operation): mixed
+    {
+        return $this->cache->lock(self::LOCK_KEY, self::LOCK_TTL_SECONDS)
+            ->block(self::LOCK_WAIT_SECONDS, function () use ($operation) {
+                $machine = $this->get();
+                $result = $operation($machine);
+                $this->save($machine);
+
+                return $result;
+            });
     }
 }
