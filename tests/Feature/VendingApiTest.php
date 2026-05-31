@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Tests\Support\InMemoryAuditLog;
 use Tests\TestCase;
+use VendingMachine\Application\AuditLog;
 
 /**
  * Drives the bounded context through the real HTTP stack: routes, container
@@ -62,5 +64,18 @@ final class VendingApiTest extends TestCase
     public function test_invalid_coin_is_a_422(): void
     {
         $this->postJson('/api/coins', ['coin' => 0.5])->assertStatus(422);
+    }
+
+    public function test_a_rejected_purchase_is_audited_with_its_reason(): void
+    {
+        $audit = new InMemoryAuditLog();
+        $this->app->instance(AuditLog::class, $audit);
+
+        $this->postJson('/api/coins', ['coin' => 0.25]);
+        $this->postJson('/api/products/SODA')->assertStatus(422);
+
+        self::assertCount(1, $audit->events);
+        self::assertSame('operation_failed', $audit->events[0]['event']);
+        self::assertSame('INSUFFICIENT_FUNDS', $audit->events[0]['context']['reason']);
     }
 }
