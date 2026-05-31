@@ -9,7 +9,7 @@ use VendingMachine\Domain\Money\Coin;
 use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
 use VendingMachine\Domain\Money\Money;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class ChangeCalculatorTest extends TestCase
 {
@@ -63,5 +63,59 @@ final class ChangeCalculatorTest extends TestCase
 
         self::assertSame(1, $bank->quantityOf(Coin::TwentyFiveCents));
         self::assertSame(1, $bank->quantityOf(Coin::TenCents));
+    }
+
+    /**
+     * Documents the known limitation of the greedy strategy: it can fail to
+     * make change even when the available coins *could* form the amount.
+     *
+     * Amount: 0.30. Bank: one 0.25 and three 0.10.
+     *   - Greedy takes the 0.25 first, then needs 0.05, has no 0.05, and 0.10
+     *     no longer fits -> it gives up and throws.
+     *   - But a valid solution exists: 0.10 + 0.10 + 0.10 = 0.30.
+     *
+     * The brute-force check below proves the solution exists, so this test is
+     * unambiguously about greedy's blind spot, not about an impossible amount.
+     * A dynamic-programming calculator would succeed here; swapping it in is a
+     * single-class change because the strategy lives behind ChangeCalculator.
+     */
+    public function test_greedy_can_fail_on_change_a_full_search_would_find(): void
+    {
+        $amount = 30;
+        $available = [25 => 1, 10 => 3, 5 => 0];
+
+        self::assertTrue(
+            $this->aSolutionExistsFor($amount, $available),
+            'Pre-condition: the bank can form the amount with some combination.',
+        );
+
+        $this->expectException(InsufficientChangeException::class);
+
+        $this->calculator->calculate(Money::fromCents($amount), CoinBank::fromCounts($available));
+    }
+
+    /**
+     * Exhaustive feasibility check used only by the test above: can the given
+     * coin stock form exactly $amount cents?
+     *
+     * @param array<int, int> $available coin value (cents) => quantity
+     */
+    private function aSolutionExistsFor(int $amount, array $available): bool
+    {
+        if ($amount === 0) {
+            return true;
+        }
+
+        foreach ($available as $value => $quantity) {
+            if ($quantity > 0 && $value <= $amount) {
+                $next = $available;
+                $next[$value]--;
+                if ($this->aSolutionExistsFor($amount - $value, $next)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
