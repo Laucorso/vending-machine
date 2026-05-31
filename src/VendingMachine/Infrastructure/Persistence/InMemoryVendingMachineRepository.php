@@ -32,4 +32,12 @@ final class InMemoryVendingMachineRepository implements VendingMachineRepository
     {
         $this->machine = $machine;
     }
+
+    public function mutate(callable $operation): mixed
+    {
+        $result = $operation($this->machine);
+        $this->save($this->machine);
+
+        return $result;
+    }
 }

@@ -17,4 +17,6 @@ interface VendingMachineRepository
     public function get(): VendingMachine;
 
     public function save(VendingMachine $machine): void;
+
+    public function mutate(callable $operation): mixed;
 }
