@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VendingMachine\Domain\Money;
 
+use VendingMachine\Domain\Money\Exception\InvalidCoinException;
+
 /**
  * The float of coins the machine holds and can dispense as change.
  *
@@ -40,7 +42,13 @@ final class CoinBank
     {
         $bank = self::empty();
         foreach ($countsByCoinValue as $coinValue => $quantity) {
-            $bank->set(Coin::from($coinValue), $quantity);
+            $coin = Coin::tryFrom($coinValue);
+
+            if ($coin === null) {
+                throw InvalidCoinException::forValue($coinValue);
+            }
+            
+            $bank->set($coin, $quantity);
         }
 
         return $bank;
