@@ -11,6 +11,17 @@ use VendingMachine\Domain\Money\CoinCollection;
 
 final class CoinBankTest extends TestCase
 {
+    public function test_it_accumulates_multiple_deposits_of_the_same_coin(): void
+    {
+        $bank = CoinBank::empty();
+
+        $bank->deposit(new CoinCollection(Coin::OneEuro));
+        $bank->deposit(new CoinCollection(Coin::OneEuro));
+        $bank->deposit(new CoinCollection(Coin::OneEuro));
+
+        self::assertSame(3, $bank->quantityOf(Coin::OneEuro));
+    }
+
     public function test_it_deposits_and_withdraws_coins(): void
     {
         $bank = CoinBank::empty();
@@ -35,5 +46,14 @@ final class CoinBankTest extends TestCase
         $this->expectException(\LogicException::class);
 
         CoinBank::empty()->withdraw(new CoinCollection(Coin::FiveCents));
+    }
+
+    public function test_it_can_withdraw_all_available_coins(): void
+    {
+        $bank = CoinBank::fromCounts([100 => 2]);
+
+        $bank->withdraw(new CoinCollection(Coin::OneEuro, Coin::OneEuro));
+
+        self::assertSame(0, $bank->quantityOf(Coin::OneEuro));
     }
 }

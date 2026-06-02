@@ -27,7 +27,10 @@ final readonly class CoinCollection
 
     public function add(Coin $coin): self
     {
-        return new self(...[...$this->coins, $coin]);
+        $coins = $this->coins;
+        $coins[] = $coin;
+
+        return new self(...$coins);
     }
 
     public function total(): Money

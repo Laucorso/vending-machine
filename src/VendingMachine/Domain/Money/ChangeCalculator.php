@@ -6,40 +6,74 @@ namespace VendingMachine\Domain\Money;
 
 use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
 
-/**
- * Computes the coins to return for a given amount, constrained by what the
- * bank actually holds.
- *
- * Strategy: greedy, largest-coin-first. For the canonical denomination set
- * {5, 10, 25, 100} greedy is optimal when coins are unlimited. With limited
- * stock greedy can occasionally fail to find change that a fuller search
- * (dynamic programming) would find. That trade-off is deliberate for this
- * domain: the algorithm lives behind a single service, so swapping it for a
- * DP implementation later is a one-class change with no impact on callers.
- */
 final class ChangeCalculator
 {
-    /**
-     * @throws InsufficientChangeException when the bank cannot make the amount.
-     */
-    public function calculate(Money $amount, CoinBank $available): CoinCollection
+    public function calculate(Money $amount, CoinBank $bank): CoinCollection
     {
-        $remaining = $amount->cents;
-        $change = CoinCollection::empty();
-        $taken = $available->copy();
+        $available = $this->bankToCounters($bank);
 
-        foreach (Coin::descending() as $coin) {
-            while ($remaining >= $coin->value && $taken->quantityOf($coin) > 0) {
-                $remaining -= $coin->value;
-                $taken->withdraw(new CoinCollection($coin));
-                $change = $change->add($coin);
-            }
-        }
+        $result = $this->solve($amount->cents, $available, Coin::descending());
 
-        if ($remaining !== 0) {
+        if ($result === null) {
             throw InsufficientChangeException::forAmount($amount);
         }
 
-        return $change;
+        return new CoinCollection(...$result);
+    }
+
+    /**
+     * @param  Coin[] $coins
+     * @param  array<int, int> $available [coinValueCents => quantity]
+     * @return Coin[]|null
+     */
+    private function solve(int $remaining, array $available, array $coins, int $i = 0): ?array
+    {
+        if ($remaining === 0) {
+            return [];
+        }
+
+        if (!isset($coins[$i])) {
+            return null;
+        }
+
+        $coin = $coins[$i];
+        $value = $coin->value;
+        $max = min(
+            intdiv($remaining, $value),
+            $available[$value] ?? 0,
+        );
+
+        // Try largest quantity first (greedy-first heuristic within backtracking)
+        for ($use = $max; $use >= 0; $use--) {
+            $next = $available;
+            $next[$value] -= $use;
+
+            $result = $this->solve(
+                    $remaining - ($use * $value), 
+                    $next, 
+                    $coins, 
+                    $i + 1
+                );
+
+            if ($result !== null) {
+                return array_merge(array_fill(0, $use, $coin), $result);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array<int, int>  [coinValueCents => quantity]
+     */
+    private function bankToCounters(CoinBank $bank): array
+    {
+        $counters = [];
+
+        foreach (Coin::descending() as $coin) {
+            $counters[$coin->value] = $bank->quantityOf($coin);
+        }
+
+        return $counters;
     }
 }
