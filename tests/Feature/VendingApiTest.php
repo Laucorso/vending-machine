@@ -78,4 +78,13 @@ final class VendingApiTest extends TestCase
         self::assertSame('operation_failed', $audit->events[0]['event']);
         self::assertSame('INSUFFICIENT_FUNDS', $audit->events[0]['context']['reason']);
     }
+
+    public function test_service_with_invalid_coin_denomination_returns_422(): void
+    {
+        $this->postJson('/api/service', [
+            'products' => ['WATER' => 1],
+            'coins' => [7 => 5],
+        ])->assertStatus(422)
+        ->assertJson(['code' => 'INVALID_COIN']);
+    }
 }

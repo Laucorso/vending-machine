@@ -144,4 +144,22 @@ final class VendingMachineTest extends TestCase
 
         return $machine;
     }
+
+    public function test_customer_can_recover_coins_after_a_sale_is_refused_for_lack_of_change(): void
+    {
+        $machine = $this->machineWith([ProductSelector::Water->value => 1], []);
+        $machine->insertCoin(Coin::OneEuro);
+
+        try {
+            $machine->vend(ProductSelector::Water, $this->changeCalculator);
+            self::fail('Expected InsufficientChangeException.');
+        } catch (InsufficientChangeException) {
+            // Refusal handled; balance must still be there to refund.
+        }
+
+        $returned = $machine->returnInsertedCoins();
+
+        self::assertSame([1.0], $returned->toDecimals());
+        self::assertTrue($machine->insertedAmount()->isZero());
+    }
 }

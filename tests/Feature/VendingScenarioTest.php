@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use VendingMachine\Application\Action\InsertCoinAction;
 use VendingMachine\Application\Action\ReturnCoinsAction;
 use VendingMachine\Application\Action\SelectProductAction;

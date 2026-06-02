@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Money;
 
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Money\ChangeCalculator;
 use VendingMachine\Domain\Money\Coin;
 use VendingMachine\Domain\Money\CoinBank;

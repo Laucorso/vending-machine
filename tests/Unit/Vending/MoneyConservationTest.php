@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Vending;
 
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Catalog\Catalog;
 use VendingMachine\Domain\Catalog\ProductInventory;
 use VendingMachine\Domain\Catalog\ProductSelector;
