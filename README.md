@@ -36,6 +36,7 @@ php artisan key:generate
 ## Running it
 
 ```bash
+php artisan vending:play  # try to grab a drink from the vending machine
 php artisan vending:demo   # the three spec examples, through the container
 php artisan test           # domain unit tests + HTTP feature tests
 php bin/demo.php            # framework-free demo, straight on the domain
