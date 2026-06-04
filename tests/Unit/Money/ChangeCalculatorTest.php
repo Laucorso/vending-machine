@@ -6,7 +6,7 @@ namespace Tests\Unit\Money;
 
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Money\ChangeCalculator;
-use VendingMachine\Domain\Money\Coin;
+use VendingMachine\Domain\Money\Enum\Coin;
 use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
 use VendingMachine\Domain\Money\Money;

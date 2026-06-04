@@ -10,7 +10,7 @@ use VendingMachine\Domain\Catalog\Exception\ProductOutOfStockException;
 use VendingMachine\Domain\Catalog\ProductInventory;
 use VendingMachine\Domain\Catalog\ProductSelector;
 use VendingMachine\Domain\Money\ChangeCalculator;
-use VendingMachine\Domain\Money\Coin;
+use VendingMachine\Domain\Money\Enum\Coin;
 use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
 use VendingMachine\Domain\Vending\Exception\InsufficientFundsException;

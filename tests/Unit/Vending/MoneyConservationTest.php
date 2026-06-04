@@ -9,7 +9,7 @@ use VendingMachine\Domain\Catalog\Catalog;
 use VendingMachine\Domain\Catalog\ProductInventory;
 use VendingMachine\Domain\Catalog\ProductSelector;
 use VendingMachine\Domain\Money\ChangeCalculator;
-use VendingMachine\Domain\Money\Coin;
+use VendingMachine\Domain\Money\Enum\Coin;
 use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Vending\VendingMachine;
 use VendingMachine\Domain\VendingMachineException;

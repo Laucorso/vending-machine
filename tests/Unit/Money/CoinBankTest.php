@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Money;
 
 use PHPUnit\Framework\TestCase;
-use VendingMachine\Domain\Money\Coin;
+use VendingMachine\Domain\Money\Enum\Coin;
 use VendingMachine\Domain\Money\CoinBank;
 use VendingMachine\Domain\Money\CoinCollection;
 

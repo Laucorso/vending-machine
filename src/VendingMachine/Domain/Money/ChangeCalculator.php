@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace VendingMachine\Domain\Money;
 
+use VendingMachine\Domain\Money\Enum\Coin;
 use VendingMachine\Domain\Money\Exception\InsufficientChangeException;
 
 final class ChangeCalculator

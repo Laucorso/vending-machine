@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VendingMachine\Application\Request;
 
-use VendingMachine\Domain\Money\Coin;
+use VendingMachine\Domain\Money\Enum\Coin;
 
 /**
  * Input boundary for "insert a coin". Translates untyped external input

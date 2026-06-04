@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace VendingMachine\Domain\Money;
 
+use VendingMachine\Domain\Money\Enum\Coin;
+
 /**
  * An immutable, ordered bag of coins.
  *

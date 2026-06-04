@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VendingMachine\Domain\Money;
+namespace VendingMachine\Domain\Money\Enum;
 
 use VendingMachine\Domain\Money\Exception\InvalidCoinException;
+use VendingMachine\Domain\Money\Money;
 
 /**
  * The set of physical coins the machine accepts and dispenses.
