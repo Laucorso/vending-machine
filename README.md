@@ -146,10 +146,10 @@ app/                                 # the Laravel adapter layer
   exactly zero changes - that is the point of the `VendingMachineRepository`
   interface.
 
-- **Change is an isolated strategy** (`ChangeCalculator`, greedy and
-  availability-aware). Greedy is optimal here with unlimited coins; with limited
-  stock it can miss a solution a dynamic-programming version would find.
-  Replacing it is a one-class change.
+- **Change is an isolated strategy (ChangeCalculator).** It runs a bounded
+  backtracking search: it walks denominations from highest to lowest, tries the
+  largest quantity of each coin first (a greedy-first ordering) and backtracks
+  when a branch can't reach the exact amount.
 
 - **The framework is a detail.** The domain has no `use Illuminate\...`. Only the
   files in `app/` that *must* know Laravel do.
