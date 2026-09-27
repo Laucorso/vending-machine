@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace VendingMachine\Domain\Money;
 
-use VendingMachine\Domain\Money\Exception\InvalidCoinException;
 use VendingMachine\Domain\Money\Enum\Coin;
+use VendingMachine\Domain\Money\Exception\InvalidCoinException;
 
 /**
  * The float of coins the machine holds and can dispense as change.

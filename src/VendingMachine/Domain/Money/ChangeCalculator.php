@@ -23,8 +23,8 @@ final class ChangeCalculator
     }
 
     /**
-     * @param  Coin[] $coins
-     * @param  array<int, int> $available [coinValueCents => quantity]
+     * @param  Coin[]  $coins
+     * @param  array<int, int>  $available  [coinValueCents => quantity]
      * @return Coin[]|null
      */
     private function solve(int $remaining, array $available, array $coins, int $i = 0): ?array
@@ -33,7 +33,7 @@ final class ChangeCalculator
             return [];
         }
 
-        if (!isset($coins[$i])) {
+        if (! isset($coins[$i])) {
             return null;
         }
 
@@ -50,11 +50,11 @@ final class ChangeCalculator
             $next[$value] -= $use;
 
             $result = $this->solve(
-                    $remaining - ($use * $value), 
-                    $next, 
-                    $coins, 
-                    $i + 1
-                );
+                $remaining - ($use * $value),
+                $next,
+                $coins,
+                $i + 1
+            );
 
             if ($result !== null) {
                 return array_merge(array_fill(0, $use, $coin), $result);
@@ -65,7 +65,7 @@ final class ChangeCalculator
     }
 
     /**
-     * @return array<int, int>  [coinValueCents => quantity]
+     * @return array<int, int> [coinValueCents => quantity]
      */
     private function bankToCounters(CoinBank $bank): array
     {

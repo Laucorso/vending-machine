@@ -68,7 +68,7 @@ final class VendingApiTest extends TestCase
 
     public function test_a_rejected_purchase_is_audited_with_its_reason(): void
     {
-        $audit = new InMemoryAuditLog();
+        $audit = new InMemoryAuditLog;
         $this->app->instance(AuditLog::class, $audit);
 
         $this->postJson('/api/coins', ['coin' => 0.25]);
@@ -85,6 +85,6 @@ final class VendingApiTest extends TestCase
             'products' => ['WATER' => 1],
             'coins' => [7 => 5],
         ])->assertStatus(422)
-        ->assertJson(['code' => 'INVALID_COIN']);
+            ->assertJson(['code' => 'INVALID_COIN']);
     }
 }

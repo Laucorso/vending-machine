@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Persistence;
 
+use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use VendingMachine\Domain\Vending\VendingMachine;
 use VendingMachine\Domain\Vending\VendingMachineRepository;
@@ -58,7 +59,7 @@ final class CacheVendingMachineRepository implements VendingMachineRepository
      */
     public function mutate(callable $operation): mixed
     {
-        /** @var \Illuminate\Contracts\Cache\Lock $lock */
+        /** @var Lock $lock */
         $lock = $this->cache->lock(self::LOCK_KEY, self::LOCK_TTL_SECONDS);
 
         return $lock->block(self::LOCK_WAIT_SECONDS, function () use ($operation) {

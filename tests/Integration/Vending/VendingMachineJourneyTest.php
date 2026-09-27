@@ -9,8 +9,8 @@ use VendingMachine\Domain\Catalog\Catalog;
 use VendingMachine\Domain\Catalog\ProductInventory;
 use VendingMachine\Domain\Catalog\ProductSelector;
 use VendingMachine\Domain\Money\ChangeCalculator;
-use VendingMachine\Domain\Money\Enum\Coin;
 use VendingMachine\Domain\Money\CoinBank;
+use VendingMachine\Domain\Money\Enum\Coin;
 use VendingMachine\Domain\Vending\VendingMachine;
 
 final class VendingMachineJourneyTest extends TestCase
@@ -19,14 +19,14 @@ final class VendingMachineJourneyTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->changeCalculator = new ChangeCalculator();
+        $this->changeCalculator = new ChangeCalculator;
     }
 
     public function test_buy_soda_with_exact_change(): void
     {
         $machine = $this->machineWith(
             products: [ProductSelector::Soda->value => 1],
-            coins:    [25 => 2, 10 => 2],
+            coins: [25 => 2, 10 => 2],
         );
 
         $bankBefore = $machine->availableChange()->cents;
@@ -65,8 +65,8 @@ final class VendingMachineJourneyTest extends TestCase
     }
 
     /**
-     * @param array<string, int> $products
-     * @param array<int, int>    $coins
+     * @param  array<string, int>  $products
+     * @param  array<int, int>  $coins
      */
     private function machineWith(array $products, array $coins): VendingMachine
     {
