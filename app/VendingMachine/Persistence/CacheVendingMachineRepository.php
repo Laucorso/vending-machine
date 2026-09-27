@@ -41,9 +41,21 @@ final class CacheVendingMachineRepository implements VendingMachineRepository
             return VendingMachine::empty();
         }
 
-        $machine = unserialize($serialized, ['allowed_classes' => true]);
+        try {
+            $machine = unserialize($serialized, ['allowed_classes' => true]);
+        } catch (\Throwable) {
+            $this->cache->forget(self::STATE_KEY);
 
-        return $machine instanceof VendingMachine ? $machine : VendingMachine::empty();
+            return VendingMachine::empty();
+        }
+
+        if (! $machine instanceof VendingMachine) {
+            $this->cache->forget(self::STATE_KEY);
+
+            return VendingMachine::empty();
+        }
+
+        return $machine;
     }
 
     public function save(VendingMachine $machine): void

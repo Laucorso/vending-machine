@@ -1,11 +1,11 @@
 # Lean, evaluation-friendly image: no MySQL/Redis (this app needs none),
 # just PHP + Composer, dependencies installed, ready to test, demo or serve.
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 # Only the extensions Laravel actually needs here. SQLite + array cache mean
 # no external services, so the image stays small and starts instantly.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git unzip libonig-dev libxml2-dev \
+        git unzip libonig-dev libxml2-dev libsqlite3-dev sqlite3 \
     && docker-php-ext-install mbstring pdo_sqlite \
     && rm -rf /var/lib/apt/lists/*
 
