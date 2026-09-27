@@ -17,7 +17,7 @@ domain code does not change.
 
 ## Requirements
 
-- PHP 8.3+
+- PHP 8.4+
 - Composer
 
 Tests use the in-memory SQLite / array cache configured in `phpunit.xml`, so no
@@ -38,6 +38,7 @@ php artisan key:generate
 ```bash
 php artisan vending:play  # try to grab a drink from the vending machine
 php artisan vending:demo   # the three spec examples, through the container
+php artisan vending:play   # interactive console game: insert coins, buy products, return cash
 php artisan test           # domain unit tests + HTTP feature tests
 php bin/demo.php            # framework-free demo, straight on the domain
 php artisan serve          # serve the API
@@ -75,7 +76,7 @@ evaluation a single command.)
 ## HTTP API
 
 | Method & path                   | Action                | Body                                             |
-|---------------------------------|-----------------------|--------------------------------------------------|
+| ------------------------------- | --------------------- | ------------------------------------------------ |
 | `POST /api/coins`               | insert a coin         | `{ "coin": 0.25 }`                               |
 | `POST /api/coins/return`        | return inserted coins | -                                                |
 | `POST /api/products/{selector}` | buy a product         | - (`selector` = WATER / JUICE / SODA)            |
@@ -137,7 +138,7 @@ app/                                 # the Laravel adapter layer
   possible) and is the only thing that can change machine state. Actions only
   orchestrate; the controller only translates HTTP.
 
-- **Operations are atomic.** `vend()` projects the change against a *copy* of the
+- **Operations are atomic.** `vend()` projects the change against a _copy_ of the
   coin bank before mutating anything; if change can't be made, nothing changes
   and the balance survives. Guard order is stock -> funds -> change.
 
@@ -153,7 +154,7 @@ app/                                 # the Laravel adapter layer
   when a branch can't reach the exact amount.
 
 - **The framework is a detail.** The domain has no `use Illuminate\...`. Only the
-  files in `app/` that *must* know Laravel do.
+  files in `app/` that _must_ know Laravel do.
 
 ---
 

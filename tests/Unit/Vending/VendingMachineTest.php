@@ -130,6 +130,20 @@ final class VendingMachineTest extends TestCase
         }
     }
 
+    /*public function test_it_can_make_change_using_a_fifty_cent_coin(): void
+    {
+        $machine = $this->machineWith(
+            products: [ProductSelector::Water->value => 1],
+            coins: [50 => 1, 25 => 1, 10 => 1],
+        );
+
+        $machine->insertCoin(Coin::OneEuro);
+
+        $outcome = $machine->vend(ProductSelector::Water, $this->changeCalculator);
+
+        self::assertSame([0.25, 0.10], $outcome->change->toDecimals());
+    }*/
+
     /**
      * @param  array<string, int>  $products
      * @param  array<int, int>  $coins
