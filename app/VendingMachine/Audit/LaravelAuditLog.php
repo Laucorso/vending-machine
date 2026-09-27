@@ -9,9 +9,7 @@ use VendingMachine\Application\AuditLog;
 
 final class LaravelAuditLog implements AuditLog
 {
-    public function __construct(private readonly LogManager $logger)
-    {
-    }
+    public function __construct(private readonly LogManager $logger) {}
 
     /** @param array<string, mixed> $context */
     public function record(string $event, array $context = []): void
